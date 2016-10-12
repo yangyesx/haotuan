@@ -8,8 +8,11 @@
 
 #import "MineViewController.h"
 #import <Masonry.h>
+#import <AFNetworking.h>
 
-@interface MineViewController ()<UIScrollViewDelegate>
+#define server @"http://192.168.191.1:8080/haotuan2/connect"
+
+@interface MineViewController ()<UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIImageView *photoImgV;
@@ -58,6 +61,7 @@
     }];
     
     self.edit = [UIButton new];
+    [self.edit addTarget:self action:@selector(edit:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.edit];
     [self.edit setImage:[UIImage imageNamed:@"edit"] forState:UIControlStateNormal];
     [self.edit mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -124,5 +128,69 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)edit:(id)sender
+{
+//    AFSecurityPolicy *securityPolicy = [[AFSecurityPolicy alloc] init];
+//    [securityPolicy setAllowInvalidCertificates:YES];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    [manager setSecurityPolicy:securityPolicy];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json",@"text/javascript", @"text/plain",nil];
+    [manager.responseSerializer setStringEncoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    [parameters setValue:@"testmethod" forKey:@"method"];
+    
+    [manager POST:server parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dict = responseObject;
+        NSLog(@"responseValue:%@", [dict valueForKey:@"type"]);
+        NSLog(@"success..............");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"failure..............: %@", error);
+    }];
+    
+    //同步get
+    // 1.将网址初始化成一个OC字符串对象
+//    NSString *urlStr1 = [NSString stringWithFormat:@"%@", server];
+//    // 如果网址中存在中文,进行URLEncode
+//    NSString *newUrlStr = [urlStr1 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//    // 2.构建网络URL对象, NSURL
+//    NSURL *url = [NSURL URLWithString:newUrlStr];
+//    // 3.创建网络请求
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:1];
+//    // 创建同步链接
+//    NSURLResponse *response = nil;
+//    NSError *error = nil;
+//    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    //同步post
+//    NSString *urlStr2 = [NSString stringWithFormat:@"%@", server];
+//    NSURL *url2 = [NSURL URLWithString:urlStr2];
+//    NSMutableURLRequest *request2 = [NSMutableURLRequest requestWithURL:url2];
+//    NSString *parmStr = @"method=album.channel.get&appKey=myKey&format=json&channel=t&pageNo=1&pageSize=10";
+//
+//    NSData *paramData = [parmStr dataUsingEncoding:NSUTF8StringEncoding];
+//    [request2 setHTTPBody:paramData];
+//    [request2 setHTTPMethod:@"POST"];
+//    NSData *data2 = [NSURLConnection sendSynchronousRequest:request2 returningResponse:nil error:nil];
+}
+
+//#pragma mark - NSURLConnectionDataDelegate
+//- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+//{
+//    NSLog(@"didReceiveData................");
+//}
+//
+//- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+//{
+//    NSLog(@"didReceiveResponse.................");
+//}
+//
+//- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+//{
+//    NSLog(@"didFailWithError.................");
+//}
 
 @end
