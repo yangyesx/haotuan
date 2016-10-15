@@ -44,8 +44,12 @@
     mvc.tabBarItem.title = @"我";
     
     self.tabBar.tintColor = [UIColor redColor];
+    self.tabBar.tag = 100;
 
     self.viewControllers = @[nvc, avc, svc, mvc];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideTabbar) name:@"hideTabbar" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showTabbar) name:@"showTabbar" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,14 +57,26 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)showTabbar
+{
+    if (self.tabBar.tag == 100) {
+        return;
+    }
+    self.tabBar.tag = 100;
+    [UIView animateWithDuration:.2 animations:^{
+        self.tabBar.frame = CGRectMake(0, self.tabBar.frame.origin.y - self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    }];
 }
-*/
+
+- (void)hideTabbar
+{
+    if (self.tabBar.tag == 200) {
+        return;
+    }
+    self.tabBar.tag = 200;
+    [UIView animateWithDuration:.2 animations:^{
+        self.tabBar.frame = CGRectMake(0, self.tabBar.frame.origin.y + self.tabBar.frame.size.height, self.tabBar.frame.size.width, self.tabBar.frame.size.height);
+    }];
+}
 
 @end

@@ -31,14 +31,14 @@
     [self.view addSubview:tableView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    self.hidesBottomBarWhenPushed = YES;
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
-    self.hidesBottomBarWhenPushed = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"hideTabbar" object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"showTabbar" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
