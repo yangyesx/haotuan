@@ -10,6 +10,7 @@
 #import <Masonry.h>
 #import <AFNetworking.h>
 #import <MBProgressHUD.h>
+#import <UIImageView+WebCache.h>
 
 #define server @"http://119.29.202.196:8080/haotuan2/connect"
 
@@ -158,6 +159,7 @@
         hud.labelText = @"success..............";
         hud.detailsLabelText = [dict objectForKey:@"type"];
         self.nickLabel.text = [dict objectForKey:@"type"];
+        [self.photoImgV sd_setImageWithURL:[dict objectForKey:@"name"] placeholderImage:[UIImage imageNamed:@"photo.jpg"]];
         [hud hide:YES afterDelay:4];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"failure..............: %@", error);
