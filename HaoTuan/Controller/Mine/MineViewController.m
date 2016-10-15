@@ -9,8 +9,9 @@
 #import "MineViewController.h"
 #import <Masonry.h>
 #import <AFNetworking.h>
+#import <MBProgressHUD.h>
 
-#define server @"http://192.168.191.1:8080/haotuan2/connect"
+#define server @"http://119.29.202.196:8080/haotuan2/connect"
 
 @interface MineViewController ()<UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
@@ -73,6 +74,7 @@
     self.trades = [UIButton new];
     [self.trades setTitle:@"我的订单" forState:UIControlStateNormal];
     self.trades.backgroundColor = [UIColor redColor];
+    [self.trades addTarget:self action:@selector(edit:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.trades];
     [self.trades mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.photoImgV.mas_bottom).multipliedBy(1.2);
@@ -137,9 +139,14 @@
 //    [manager setSecurityPolicy:securityPolicy];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json",@"text/javascript", @"text/plain",nil];
     [manager.responseSerializer setStringEncoding:NSUTF8StringEncoding];
+    manager.requestSerializer.timeoutInterval = 5;
     
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     [parameters setValue:@"testmethod" forKey:@"method"];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    hud.mode = MBProgressHUDModeAnnularDeterminate;
+    hud.labelText = @"Loading";
     
     [manager POST:server parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
@@ -147,8 +154,17 @@
         NSDictionary *dict = responseObject;
         NSLog(@"responseValue:%@", [dict valueForKey:@"type"]);
         NSLog(@"success..............");
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"success..............";
+        hud.detailsLabelText = [dict objectForKey:@"type"];
+        self.nickLabel.text = [dict objectForKey:@"type"];
+        [hud hide:YES afterDelay:4];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"failure..............: %@", error);
+        hud.labelText = @"failure..............";
+        hud.detailsLabelText = [NSString stringWithFormat:@"%@", error];
+        hud.mode = MBProgressHUDModeText;
+        [hud hide:YES afterDelay:8];
     }];
     
     //同步get
