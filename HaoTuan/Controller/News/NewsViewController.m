@@ -31,6 +31,16 @@
     [self.view addSubview:tableView];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.hidesBottomBarWhenPushed = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    self.hidesBottomBarWhenPushed = NO;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

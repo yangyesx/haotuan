@@ -11,6 +11,9 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) UIView *launchView;
+@property (nonatomic, strong) UIImageView *iconView;
+
 @end
 
 @implementation AppDelegate
@@ -24,6 +27,8 @@
     
     [self.window makeKeyAndVisible];
     
+    [self showLaunchView];
+
     return YES;
 }
 
@@ -47,6 +52,30 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)showLaunchView
+{
+    self.launchView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    self.launchView.backgroundColor = [UIColor whiteColor];
+    
+    [self.window addSubview:self.launchView];
+    
+    self.iconView = [[UIImageView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - [UIScreen mainScreen].bounds.size.width / 3) / 2, ([UIScreen mainScreen].bounds.size.height - [UIScreen mainScreen].bounds.size.width / 3) / 2, [UIScreen mainScreen].bounds.size.width / 3, [UIScreen mainScreen].bounds.size.width / 3)];
+    self.iconView.image = [UIImage imageNamed:@"icon"];
+    [self.launchView addSubview:self.iconView];
+    
+    [self performSelectorOnMainThread:@selector(hideLaunchView) withObject:nil waitUntilDone:YES];
+}
+
+- (void)hideLaunchView
+{
+    [UIView animateWithDuration:1 animations:^{
+        self.launchView.alpha = 0;
+        self.iconView.frame = CGRectMake(self.iconView.frame.origin.x, -self.iconView.frame.size.height * 10, self.iconView.frame.size.width, self.iconView.frame.size.height);
+    } completion:^(BOOL finished) {
+        [self.launchView removeFromSuperview];
+    }];
 }
 
 @end
