@@ -10,7 +10,7 @@
 #import <Masonry.h>
 #import <AFNetworking.h>
 
-#define server @"http://192.168.191.1:8080/haotuan2/connect"
+#define server @"http://119.29.202.196:8080/haotuan2/connect"
 
 @interface MineViewController ()<UIScrollViewDelegate, NSURLConnectionDataDelegate>
 
